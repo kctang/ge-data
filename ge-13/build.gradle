@@ -1,0 +1,293 @@
+apply plugin: 'base'
+
+String partyListHtml = "$buildDir/html/party-list.html"
+task downloadPartyList() << {
+    new File("$buildDir/html").mkdirs()
+    download('http://www.spr.gov.my/index.php?option=com_content&view=article&id=142&Itemid=230', partyListHtml)
+}
+downloadPartyList.outputs.file partyListHtml
+
+String partyListJson = "$buildDir/party-list.json"
+task extractPartyList(dependsOn: 'downloadPartyList') << {
+    def html = parseHtml partyListHtml
+
+    def parties = []
+    def img = false
+    html.'**'.findAll { tag ->
+        tag.name() == 'table' && tag.@style == 'width: 924px;' && tag.@border == '1'
+    }.each { table ->
+        table.'**'.findAll { tag ->
+            tag.name() == 'td'
+        }.each { td ->
+            td.'**'.each { tag ->
+                if (tag.name() == 'img') {
+                    img = tag.@src
+                } else if (tag.name() == 'p' &&
+                        tag.@class == 'style2' &&
+                        tag.text().trim().length() > 0 &&
+                        img != false) {
+
+                    def xId = img.toString()
+                    xId = xId.substring(xId.lastIndexOf('/') + 1)
+                            .replace('.jpg', '').replace('.png', '')
+                            .replace('LogoUPKO', 'upko')
+                            .replace('parti_SWP', 'swp').toLowerCase()
+
+                    parties.add((Map) [
+                            xId: xId,
+                            party: tag.text()
+                                    .replaceAll("\\s+", " ")
+                                    .replaceAll('\\u201A\\u00C4\\u00F4', '\'')
+                                    .replaceAll('(\\).+)', '\\)')
+                                    .replaceAll('Se Malaysia', 'Se-Malaysia')
+                                    .replaceAll('Parti KongresCeylonese Malaysia', 'Parti Kongres Ceylonese Malaysia'),
+                            logo: img.toString().substring(img.toString().lastIndexOf('/') + 1)
+                    ])
+                    img = false // reset img
+                }
+            }
+        }
+    }
+
+    new File(partyListJson).text = new groovy.json.JsonBuilder('parties': parties)
+}
+extractPartyList.inputs.file partyListHtml
+extractPartyList.outputs.file partyListJson
+
+task downloadPartyLogo(dependsOn: 'extractPartyList') << {
+    def parties = new groovy.json.JsonSlurper().parse(new FileReader(partyListJson)).parties
+
+    new File("$buildDir/logo").mkdirs()
+    parties.each { party ->
+        download("http://www.spr.gov.my/images/stories/parti/${party.logo}", "$buildDir/logo/${party.xId}.png")
+    }
+}
+downloadPartyLogo.inputs.file partyListJson
+downloadPartyLogo.outputs.dir "$buildDir/logo"
+
+String stateListHtml = "$buildDir/html/state-list.html"
+String stateListJson = "$buildDir/state-list.json"
+task downloadStateList << {
+    def states = [:]
+
+    new File("$buildDir/html").mkdirs()
+    parseHtml('http://resultpru13.spr.gov.my/module/keputusan/paparan/paparan_Laporan.php', stateListHtml).'**'.findAll { tag ->
+        tag.name() == 'select' && tag.@id == 'State'
+    } each { select ->
+        select.children().each { option ->
+            if (option.@value != '') {
+                states.put(option.@value, option.text())
+            }
+        }
+
+    }
+
+    new File(stateListJson).text = new groovy.json.JsonBuilder('states': states)
+}
+downloadStateList.outputs.files stateListHtml, stateListJson
+
+task downloadSeats(dependsOn: 'downloadStateList') << {
+    def states = new groovy.json.JsonSlurper().parse(new FileReader(stateListJson)).states
+
+    def seatTypes = ['parliament': '01', 'state': '02']
+
+    new File("$buildDir/html/seats").mkdirs()
+    seatTypes.each { seatName, seatType ->
+        states.each { stateKey, stateName ->
+            String seatUrl = "http://resultpru13.spr.gov.my/module/keputusan/paparan/paparan_Laporan.php?bhgn=${seatType}&State=${stateKey}"
+            String seatFilename = "$buildDir/html/seats/$seatName-${stateKey}.html"
+            download seatUrl, seatFilename
+        }
+    }
+}
+downloadSeats.outputs.dir "$buildDir/html/seats"
+
+String seatsJson = "$buildDir/seats.json"
+task extractSeats(dependsOn: 'downloadSeats') << {
+    def seats = []
+
+    def states = new groovy.json.JsonSlurper().parse(new FileReader(stateListJson)).states
+    def collection = files { new File("$buildDir/html/seats").listFiles() }
+    collection.each { f ->
+        def hasLinkedSeat = false
+        def hasSeat = false
+
+        def fileSeatType
+        if (f.getName().contains('state')) {
+            fileSeatType = 'state'
+        } else if (f.getName().contains('parliament')) {
+            fileSeatType = 'parliament'
+        } else {
+            throw new InvalidUserDataException('Expecting [parliament|seat]')
+        }
+
+        def stateCode = f.getName().replaceAll('\\w+-(\\d+).html', '$1')
+
+        // find seats with links
+        parseHtml(f.toString()).'**'.findAll { tag ->
+            tag.name() == 'a'
+        }.each { tag ->
+            def seatNoNameId = tag.text() + ' ' + tag.@onclick.toString().replaceAll(
+                    "windKeputusan.+, '(\\d+)'\\)", '- $1'
+            )
+
+            def seat = [:]
+            seat.type = fileSeatType
+            seat.state = states[stateCode]
+            seat.xStateCode = stateCode
+
+            seatNoNameId = seatNoNameId.split(' - ')
+            seat.seatNo = seatNoNameId[0].trim()
+            seat.name = seatNoNameId[1].trim()
+            seat.xId = seatNoNameId[2].trim()
+            seats.add seat
+
+            hasLinkedSeat = true
+        }
+
+        // find seats without links (i.e. sarawak got state seats but not voting)
+        if (!hasLinkedSeat) {
+
+            parseHtml(f.toString()).'**'.findAll { tag ->
+                tag.name() == 'font' && tag.@color == '#666666'
+            }.each { font ->
+                def seat = [:]
+                seat.type = fileSeatType
+                seat.state = states[stateCode]
+                seat.xStateCode = stateCode
+
+                def seatNoName = font.text().split(' - ')
+                seat.seatNo = seatNoName[0].trim()
+                seat.name = seatNoName[1].trim()
+                seats.add seat
+
+                hasSeat = true
+            }
+
+            if (!hasSeat) {
+                logger.warn 'No seat found for ' + f.name
+            }
+        }
+    }
+
+    new File(seatsJson).text = new groovy.json.JsonBuilder('seats': seats)
+}
+extractSeats.inputs.dir "$buildDir/html/seats"
+extractSeats.outputs.file seatsJson
+
+task downloadSeatsResult(dependsOn: 'extractSeats') << {
+    def seats = new groovy.json.JsonSlurper().parse(new FileReader(seatsJson)).seats
+
+    new File("$buildDir/html/results").mkdirs()
+    seats.each { seat ->
+        if (seat.containsKey('xId')) {
+            String url
+            if (seat.type == 'state') {
+                url = "http://keputusan.pru13.gov.my/5_KeputusanDUN.php?kod=${seat.xId}"
+            } else if (seat.type == 'parliament') {
+                url = "http://keputusan.pru13.gov.my/5_KeputusanDR.php?kod=${seat.xId}"
+            } else {
+                throw new InvalidUserDataException('Expecting [parliament|seat]')
+            }
+
+            download(url, "$buildDir/html/results/${seat.xId}.html")
+        }
+    }
+
+}
+downloadSeatsResult.inputs.file seatsJson
+downloadSeatsResult.outputs.dir "$buildDir/html/results"
+
+String seatsResultJson = "$buildDir/seats-result.json"
+task extractSeatsResult(dependsOn: 'downloadSeatsResult') << {
+    def seatsResult = []
+    def seats = new groovy.json.JsonSlurper().parse(new FileReader(seatsJson)).seats
+
+    def collection = files { new File("$buildDir/html/results").listFiles() }
+    collection.each { f ->
+        // --- seat info
+        def xId = f.name.replaceAll('.html', '')
+        def type, state, xStateCode, seatNo, name
+        seats.each { seat ->
+            // TODO: not efficient loop
+            if (seat.xId == xId) {
+                type = seat.type
+                state = seat.state
+                xStateCode = seat.xStateCode
+                seatNo = seat.seatNo
+                name = seat.name
+            }
+        }
+        logger.debug "$xId, $type, $state, $xStateCode, $seatNo, $name"
+
+        // --- candidate info
+        def candidates = []
+        parseHtml(f.toString()).'**'.findAll { tag ->
+            tag.name() == 'table' && tag.@cellpadding == '0'
+        }.each { table ->
+            // process candidates
+            table.children().findAll { tag ->
+                tag.name() == 'tr' && tag.@valign == 'center'
+            }.each { candidateTr ->
+
+                def candidate = [:]
+                candidate.name = candidateTr.td[0].toString().replaceAll('\\d+.', '').trim()
+                candidate.party = candidateTr.td[1].toString().trim()
+                candidate.notes = candidateTr.td[3].toString().trim()
+
+                def candidateVoteCount = candidateTr.td[2].toString().replaceAll(',', '').trim()
+                if (!candidateVoteCount.isNumber()) {
+                    throw new InvalidUserDataException('Unexpected data [$candidateVoteCount] for candidateVoteCount')
+                }
+
+                candidate.voteCount = candidateVoteCount
+                candidates.add candidate
+            }
+        }
+
+        // --- summary info
+        def summary = [:]
+        parseHtml(f.toString()).'**'.findAll { tag ->
+            tag.name() == 'table' && tag.@border == '0' && tag.@cellpadding == ''
+        }.each { summaryTable ->
+            summary.jumlahPemilihBerdaftar = summaryTable.tr[0].td[3]
+            summary.jumlahKertasUndiDitolak = summaryTable.tr[1].td[3]
+            summary.jumlahKertasUndiDalamPetiUndi = summaryTable.tr[2].td[3]
+            summary.jumlahKertasUndiDikeluarkan = summaryTable.tr[3].td[3]
+            summary.jumlahKertasUndiTidakDikembalikan = summaryTable.tr[4].td[3]
+            summary.peratusPengundian = summaryTable.tr[5].td[3]
+            summary.majoriti = summaryTable.tr[6].td[3]
+
+            // remove comma
+            for (e in summary) {
+                summary[e.key] = e.value.toString().trim().replaceAll(',', '').replaceAll('%', '')
+            }
+
+            // validate figures
+            summary.each { k, v ->
+                if (!v.isNumber()) {
+                    throw new InvalidUserDataException("Unexpected data [${v}] for key [${k}]")
+                }
+            }
+        }
+
+        seatsResult.add(
+                xId: xId, type: type, state: state, xStateCode: xStateCode, seatNo: seatNo, name: name,
+                candidates: candidates, summary: summary
+        )
+    }
+
+    new File(seatsResultJson).text = new groovy.json.JsonBuilder(
+            'seatsResult': seatsResult
+    )
+}
+extractSeatsResult.inputs.dir "$buildDir/html/results"
+extractSeatsResult.outputs.file seatsResultJson
+
+task takeSnapshot(dependsOn: ['downloadPartyLogo', 'extractSeatsResult']) << {
+    def dataDir = 'data-' + new Date().format('yyyyMMdd-HHmmss')
+    copy {
+        from "$buildDir"
+        into dataDir
+    }
+}

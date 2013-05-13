@@ -1,0 +1,30 @@
+apply plugin: 'base'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
+    }
+}
+
+def download(String url, String filename) {
+    def file = new FileOutputStream(filename)
+    def out = new BufferedOutputStream(file)
+
+    logger.info "Downloading ${url} to ${filename}"
+    out << new URL(url).openStream()
+    out.close()
+}
+
+def parseHtml(String filename) {
+    def parser = new org.ccil.cowan.tagsoup.Parser()
+    parser.setFeature(parser.namespacesFeature, false)
+    new XmlSlurper(parser).parse(new File(filename))
+}
+
+def parseHtml(String url, String filename) {
+    download(url, filename)
+    parseHtml(filename)
+}
