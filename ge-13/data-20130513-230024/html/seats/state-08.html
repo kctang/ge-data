@@ -1,0 +1,236 @@
+<script language="javascript">
+var img1="../../../dropdown/arrow.gif";	
+var img2="../../../dropdown/arrowdn.gif";
+//var urlroot = "../../../";
+var urlroot = ""; //"/";
+var usrmod = new Array( );
+</script><html>
+<head>
+<title>SISTEM PENGURUSAN MAKLUMAT PILIHAN RAYA UMUM</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="../../../_css/sprstyle.css" rel="stylesheet" type="text/css">
+
+
+<script type="text/javascript" src="../../../dropdown/milonic_src.js"></script>
+<script type="text/javascript" src="../../../dropdown/mmenudom.js"></script>
+<!-- The next file contains your menu data, links and menu structure etc -->
+<script type="text/javascript" src="../../../dropdown/menu_data.php"></script>
+<style type="text/css"> 
+body { 
+margin-top: 0px; 
+padding-top: 0px; 
+} 
+</style> 
+
+</head>
+<!--#FFFF33-->
+<body onLoad="show5()" bgcolor="#FFFDB3" align=top topmargin="0" leftmargin="0">
+<script language="JavaScript">
+<!--
+
+function show5(){
+ if (!document.layers&&!document.all&&!document.getElementById)
+ return
+ var Digital=new Date()
+ var hours=Digital.getHours()
+ var minutes=Digital.getMinutes()
+ var seconds=Digital.getSeconds()
+ var dn="AM" 
+ if (hours>12){
+ dn="PM"
+ hours=hours-12
+ }
+ if (hours==0)
+ hours=12
+ if (minutes<=9)
+ minutes="0"+minutes
+ if (seconds<=9)
+ seconds="0"+seconds
+//change font size here to your desire
+myclock="<font size='2' face='Arial' color='black'><b>"+hours+":"+minutes+":"
+ +seconds+" "+dn+"</b></font>"
+if (document.layers){
+document.layers.liveclock.document.write(myclock)
+document.layers.liveclock.document.close()
+}
+else if (document.all)
+liveclock.innerHTML=myclock
+else if (document.getElementById)
+document.getElementById("liveclock").innerHTML=myclock
+setTimeout("show5()",1000)
+}
+
+function popUpSPRMap(sppru,url)
+{ 
+	window.open("../../../"+url,sppru,'fullscreen=yes, scrollbars=auto');
+	//if (sppru=="dr")
+		//window.open("../../../"+url,'map_dr','fullscreen=yes, scrollbars=auto');
+	//else if (sppru=="dun")
+	//	window.open("../../../"+url,'map_dun','fullscreen=yes, scrollbars=auto');		
+}
+
+//-->
+</script>
+
+
+<TABLE BORDER="0" cellpadding="0" CELLSPACING="0" align="center" style="margin-top:0;padding-top:0;">
+<TR>
+<TD WIDTH="1002" HEIGHT="80" BACKGROUND="../../../images/banner/default.jpg" VALIGN="bottom">
+<div align="right" style="margin-right: 25pt;"><!--<span id="liveclock" style="width: 98px; height: 19px"></span>--></div>
+<div align="right" style="margin-right: 90pt;"></div></td>
+</TR>
+</TABLE><HTML>
+<head>
+	<style type="text/css">
+	<!--
+	td { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; }
+	B { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; }
+	input {  font-family: Arial, Helvetica, sans-serif; font-size: 8pt; }
+	select {  font-family: Arial, Helvetica, sans-serif; font-size: 9pt; }	
+	.Justify {text-align:justify}
+	A:link    {text-decoration: none; color: blue;}
+	A:visited {text-decoration: none; color: blue;}
+	A:active  {text-decoration: none; color: blue;}
+	A:hover   {text-decoration: none; color: blue;}
+	-->
+	</style>
+</head>
+<script language=javascript>
+var windObj=null;
+var vhost = '';
+var vport ="";
+if (window.port)
+	vport= ":"+window.location.port;
+vhost = window.location.protocol + '//' + window.location.hostname + vport;
+
+function submitfrm()
+{
+	var objBhg = document.getElementsByName('bhgn');
+	var Bhg=false;
+	
+	for(i=0; i<objBhg.length; i++){ 
+		if(objBhg[i].checked){Bhg=true; break} 
+	}
+	
+	if(Bhg && document.getElementById('State').value!=""){
+		document.getElementById('action').value=="semak";
+		document.frm.submit();
+	}
+	else
+		return;
+}
+
+function windKeputusan(filenm, dunkod){
+	if(windObj==null || windObj.closed){
+		windObj = window.open(filenm+'?kod='+dunkod,'',
+			'left=300,top=200,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=no,copyhistory=no,height=480px,width=1000px', true);
+		windObj.focus();
+	}
+	else{ windObj.focus();	}
+	
+}
+
+</script>
+<form name="frm" id="frm" action="paparan_Laporan.php" method="post">
+<input type="hidden" name="action" id="action">
+<div align="center">
+	<table border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr>
+	  <td height="28" colspan="2" align="center" valign="top">&nbsp;</td>
+	  </tr>
+	<tr> 
+	<td valign="top" align="center" width="25" height="28"><img src="../../../images/title.gif" width="25" height="24"><b></b></td>
+	<td align="left" height="28"><b><font face="Arial" size="4">KEPUTUSAN PILIHAN RAYA UMUM DEWAN UNDANGAN NEGERI  BAGI TAHUN 2013</font></b></td>
+	</tr>
+	</table>
+	<br>
+	<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="80%" height="0" bgcolor="#C9C8C0">
+	<tr> 
+	<td colspan="3"><img src="../../../images/h1.gif" width="100%" height="6"></td>
+	</tr>
+	<tr> 
+	<td colspan="3"><img src="../../../images/h2.gif" width="100%" height="11" border="0"></td>
+	</tr>
+	<TR height="150">
+	  <TD colspan="3">
+	  <table width="70%"  border="0" cellspacing="0" cellpadding="0" align="center">
+			<TR > 
+			<TD height="30" colspan="2">&nbsp; Sila Pilih Kriteria Pilihan Raya berikut : </TD>
+			<TD width="268" height="30">Penunjuk :</td>
+			</TR>
+			<TR height="30">
+			  <TD colspan="2">&nbsp;<input type='radio' name='bhgn' value='01'  onClick="submitfrm()">Parlimen</TD>
+			  <TD>
+				  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+					<tr>
+					<td width="7%" height="17" bgcolor="#666666">&nbsp;</td>
+					<td width="93%" height="17">&nbsp; Keputusan Belum Diterima</td>
+					</tr>
+				  </table>	  </td>
+			</TR>
+			<TR height="30">
+			  <TD colspan="2">&nbsp;<input type='radio' name='bhgn' value='02' checked onClick="submitfrm()">Dewan Undangan Negeri</TD>
+				  <TD>
+					  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+						  <tr>
+							<td width="7%" height="17" bgcolor="#0033CC">&nbsp;</td>
+							<td width="93%" height="17">&nbsp; Keputusan sudah Diterima</td>
+						  </tr>
+					 </table>
+				</td>
+			  </TR>
+			<TR height="30"> 
+			<TD width="102">&nbsp; Negeri</TD>	
+			<TD width="221"> &nbsp;
+				<select id="State" name="State" onChange="submitfrm()">
+				<option value="" selected>Sila Pilih Negeri</option>
+						  
+			<!--<option value="">Sila Pilih Negeri</option>-->
+<option value="09">PERLIS</option><option value="02">KEDAH</option><option value="03">KELANTAN</option><option value="11">TERENGGANU</option><option value="07">PULAU PINANG</option><option value="08">PERAK</option><option value="06">PAHANG</option><option value="10">SELANGOR</option><option value="14">W.P. KUALA LUMPUR</option><option value="16">W.P. PUTRAJAYA</option><option value="05">NEGERI SEMBILAN</option><option value="04">MELAKA</option><option value="01">JOHOR</option><option value="15">W.P. LABUAN</option><option value="12">SABAH</option><option value="13">SARAWAK</option></select>
+				</td>
+			<TD width="268">&nbsp;</td>
+			</TR>
+      </table>
+	  </TD>
+	  </TR>
+
+	<!--TR height="30">
+	  <TD >&nbsp; Tahun</TD>
+	  <TD >&nbsp; <select id="Year" name="Year">
+			<option value="" selected>Sila Pilih Tahun</option>
+							  
+	  	   </select>	  
+	  </td>
+	</TR-->	
+	<tr> 
+	<td colspan="3"><img src="../../../images/h2.gif" width="100%" height="11" border="0"></td>
+	</tr>
+	</TABLE>
+	  
+<!--p> 
+  <input type="button" name="semak" value="SEMAK" id="semak" onClick="submitfrm()">
+  <br>
+  <br>
+</p-->
+</div>
+
+		
+			<table width="95%" border="0" cellspacing="3" cellpadding="0" align="center">
+			<tr>
+			  <td colspan="3">&nbsp;</td>
+			  </tr>
+			<tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05401')"> N.01 - PENGKALAN HULU </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05402')"> N.02 - TEMENGOR </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05503')"> N.03 - KENERING </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05504')"> N.04 - KOTA TAMPAN </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05605')"> N.05 - SELAMA </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05606')"> N.06 - KUBU GAJAH </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05607')"> N.07 - BATU KURAU </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05708')"> N.08 - TITI SERONG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05709')"> N.09 - KUALA KURAU </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05810')"> N.10 - ALOR PONGSU </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05811')"> N.11 - GUNONG SEMANGGOL </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05812')"> N.12 - SELINSING </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05913')"> N.13 - KUALA SAPETANG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05914')"> N.14 - CHANGKAT JERING </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '05915')"> N.15 - TRONG </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06016')"> N.16 - KAMUNTING </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06017')"> N.17 - POKOK ASSAM </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06018')"> N.18 - AULONG </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06119')"> N.19 - CHENDEROH </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06120')"> N.20 - LUBOK MERBAU </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06221')"> N.21 - LINTANG </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06222')"> N.22 - JALONG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06323')"> N.23 - MANJOI </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06324')"> N.24 - HULU KINTA </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06425')"> N.25 - CANNING </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06426')"> N.26 - TEBING TINGGI </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06427')"> N.27 - PASIR PINJI </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06528')"> N.28 - BERCHAM </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06529')"> N.29 - KEPAYANG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06530')"> N.30 - BUNTONG </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06631')"> N.31 - JELAPANG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06632')"> N.32 - MENGLEMBU </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06633')"> N.33 - TRONOH </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06734')"> N.34 - BUKIT CHANDAN </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06735')"> N.35 - MANONG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06836')"> N.36 - PENGKALAN BAHARU </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06837')"> N.37 - PANTAI REMIS </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06938')"> N.38 - BELANJA </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '06939')"> N.39 - BOTA </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07040')"> N.40 - MALIM NAWAR </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07041')"> N.41 - KERANJI </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07042')"> N.42 - TUALANG SEKAH </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07143')"> N.43 - SUNGAI RAPAT </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07144')"> N.44 - SIMPANG PULAI </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07145')"> N.45 - TEJA </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07246')"> N.46 - CHENDERIANG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07247')"> N.47 - AYER KUNING </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07348')"> N.48 - SUNGAI MANIK </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07349')"> N.49 - KAMPONG GAJAH </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07450')"> N.50 - SITIAWAN </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07451')"> N.51 - PASIR PANJANG </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07452')"> N.52 - PANGKOR </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07553')"> N.53 - RUNGKUP </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07554')"> N.54 - HUTAN MELINTANG </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07655')"> N.55 - PASIR BEDAMAR </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07656')"> N.56 - CHANGKAT JONG </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07757')"> N.57 - SUNGKAI </a>&nbsp;</td></tr><tr><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07758')"> N.58 - SLIM </a>&nbsp;</td><td width='30%'>&nbsp;<a href="#" onClick="windKeputusan('5_KeputusanDUN.php', '07759')"> N.59 - BEHRANG </a>&nbsp;</td>		   </table>
+<table width="95%" border="0" cellspacing="1" cellpadding="0" align="center">
+			<tr> 
+			<td colspan="3"><img src="../../../images/h2.gif" width="100%" height="11" border="0"></td>
+			</tr>			
+			<tr> 
+			<td colspan="3" height="2"><img src="../../../images/h1.gif" width="100%" height="6"></td>
+			</tr>					   
+		   </table>			   			
+	
+  
+
+</form>
+</BODY>
+</HTML>
